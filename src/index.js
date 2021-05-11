@@ -2,7 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
+//const mongoose = require("mongoose");
 var CryptoJS = require("crypto-js");
 let app = express();
 app.use(bodyParser.json());
@@ -20,9 +20,9 @@ app.use(function (req, res, next) {
 app.get("/", (req, res) => {
   res.send("Experss reply");
 });
-app.get("/GetShop", (req, res) => {
-  console.log("data got");
-  res.send({
+app.get("/GetShop/:ShopID", (req, res) => {
+  console.log(req.params.ShopID);
+  var data = JSON.stringify({
     shopName: "Ak stores",
     shopOwner: "Arun kumar from backend",
     shopOwnerMobile: "9876543123",
@@ -69,14 +69,17 @@ app.get("/GetShop", (req, res) => {
       }
     ]
   });
+  let ciphertext = CryptoJS.AES.encrypt(data, "!@#$%^&*()").toString();
+  res.send({ body: ciphertext });
 });
+
 app.post("/CreateShop", (req, res) => {
   //console.log(req.body);
   let bytes = CryptoJS.AES.decrypt(req.body.body, "!@#$%^&*()");
   let key = bytes.toString(CryptoJS.enc.Utf8);
   let shopData = JSON.parse(key);
   console.log(shopData);
-  res.send(shopData);
+  res.send({ body: "data recieved" });
 });
 //create a server object:
 app.listen(8080, () => console.log("Server started"));
