@@ -19,7 +19,7 @@ app.use(function (req, res, next) {
   next();
 });
 var loc =
-  "mongodb+srv://nandhagopal:NandhaAdmin01!@mydb.4lyfk.gcp.mongodb.net/EmployeeDatabase?retryWrites=true&w=majority";
+  "mongodb+srv://nandhagopal:NandhaAdmin01!@mydb.4lyfk.gcp.mongodb.net/InstaComplexTest?retryWrites=true&w=majority";
 mongoose.connect(
   loc,
   { useNewUrlParser: true, useUnifiedTopology: true },
@@ -35,7 +35,7 @@ app.post("/CreateShop", (req, res) => {
   let bytes = CryptoJS.AES.decrypt(req.body.body, "!@#$%^&*()");
   let key = bytes.toString(CryptoJS.enc.Utf8);
   let shopData = JSON.parse(key);
-  console.log(shopData);
+  //console.log(shopData);
   var newShop = new shopModel(shopData);
   newShop.save(function (err, data) {
     if (err) {

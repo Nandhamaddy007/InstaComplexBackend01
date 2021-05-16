@@ -8,8 +8,8 @@ var shopSchema = new mongoose.Schema({
   shopOwnerInstaId: String,
   shopOwnerGpay: String,
   shopOwnerPaytm: String,
-  shopLogo: Blob,
+  shopLogo: String,
   ProductDetails: Array
 });
 
-module.exports = mongoose.model("shop", shopSchema, "shops");
+module.exports = mongoose.model("shop", shopSchema, "shopdetails");
