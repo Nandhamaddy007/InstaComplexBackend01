@@ -2,7 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-//const mongoose = require("mongoose");
+const mongoose = require("mongoose");
 var CryptoJS = require("crypto-js");
 let app = express();
 app.use(bodyParser.json());
@@ -35,7 +35,6 @@ app.get("/GetShop/:ShopID", (req, res) => {
     ProductDetails: [
       {
         productName: "shirt",
-        productDescription: "sdsd",
         productColor: "sdsdsd",
         ProductVariance: [
           {
@@ -52,7 +51,106 @@ app.get("/GetShop/:ShopID", (req, res) => {
       },
       {
         productName: "pant",
-        productDescription: "dfkkjf",
+
+        productColor: "blue",
+        ProductVariance: [
+          {
+            productPrice: "799",
+            productAvailability: true,
+            productSize: "32"
+          },
+          {
+            productPrice: "899",
+            productAvailability: true,
+            productSize: "36"
+          }
+        ]
+      },
+      {
+        productName: "shirt",
+
+        productColor: "sdsdsd",
+        ProductVariance: [
+          {
+            productPrice: "499",
+            productAvailability: true,
+            productSize: "32"
+          },
+          {
+            productPrice: "599",
+            productAvailability: true,
+            productSize: "38"
+          }
+        ]
+      },
+      {
+        productName: "pant",
+        productColor: "blue",
+        ProductVariance: [
+          {
+            productPrice: "799",
+            productAvailability: true,
+            productSize: "32"
+          },
+          {
+            productPrice: "899",
+            productAvailability: true,
+            productSize: "36"
+          }
+        ]
+      },
+      {
+        productName: "shirt",
+        productColor: "sdsdsd",
+        ProductVariance: [
+          {
+            productPrice: "499",
+            productAvailability: true,
+            productSize: "32"
+          },
+          {
+            productPrice: "599",
+            productAvailability: true,
+            productSize: "38"
+          }
+        ]
+      },
+      {
+        productName: "pant",
+
+        productColor: "blue",
+        ProductVariance: [
+          {
+            productPrice: "799",
+            productAvailability: true,
+            productSize: "32"
+          },
+          {
+            productPrice: "899",
+            productAvailability: true,
+            productSize: "36"
+          }
+        ]
+      },
+      {
+        productName: "shirt",
+
+        productColor: "sdsdsd",
+        ProductVariance: [
+          {
+            productPrice: "499",
+            productAvailability: true,
+            productSize: "32"
+          },
+          {
+            productPrice: "599",
+            productAvailability: true,
+            productSize: "38"
+          }
+        ]
+      },
+      {
+        productName: "pant",
         productColor: "blue",
         ProductVariance: [
           {
@@ -72,6 +170,18 @@ app.get("/GetShop/:ShopID", (req, res) => {
   let ciphertext = CryptoJS.AES.encrypt(data, "!@#$%^&*()").toString();
   res.send({ body: ciphertext });
 });
+var loc='mongodb+srv://nandhagopal:NandhaAdmin01!@mydb.4lyfk.gcp.mongodb.net/EmployeeDatabase?retryWrites=true&w=majority'
+
+
+    mongoose.connect(loc, { useNewUrlParser : true, 
+        useUnifiedTopology: true }, function(error) {
+            if (error) {
+                console.log("Error! " + error);
+               
+            }
+            
+       
+})
 
 app.post("/CreateShop", (req, res) => {
   //console.log(req.body);
