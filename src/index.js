@@ -4,6 +4,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 var CryptoJS = require("crypto-js");
+var shopModel = require("./shopSchema");
 let app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,6 +17,32 @@ app.use(function (req, res, next) {
     "Origin, X-Requested-With, Content-Type, Accept"
   );
   next();
+});
+var loc =
+  "mongodb+srv://nandhagopal:NandhaAdmin01!@mydb.4lyfk.gcp.mongodb.net/EmployeeDatabase?retryWrites=true&w=majority";
+mongoose.connect(
+  loc,
+  { useNewUrlParser: true, useUnifiedTopology: true },
+  function (error) {
+    if (error) {
+      console.log("Error! " + error);
+    }
+  }
+);
+
+app.post("/CreateShop", (req, res) => {
+  //console.log(req.body);
+  let bytes = CryptoJS.AES.decrypt(req.body.body, "!@#$%^&*()");
+  let key = bytes.toString(CryptoJS.enc.Utf8);
+  let shopData = JSON.parse(key);
+  console.log(shopData);
+  var newShop = new shopModel(shopData);
+  newShop.save(function (err, data) {
+    if (err) {
+      res.send({ err: "Internal server error", code: 500, act: err });
+    }
+    res.send({ body: "Shop Added Successfully!!!" });
+  });
 });
 app.get("/", (req, res) => {
   res.send("Experss reply");
@@ -170,27 +197,7 @@ app.get("/GetShop/:ShopID", (req, res) => {
   let ciphertext = CryptoJS.AES.encrypt(data, "!@#$%^&*()").toString();
   res.send({ body: ciphertext });
 });
-var loc='mongodb+srv://nandhagopal:NandhaAdmin01!@mydb.4lyfk.gcp.mongodb.net/EmployeeDatabase?retryWrites=true&w=majority'
 
-
-    mongoose.connect(loc, { useNewUrlParser : true, 
-        useUnifiedTopology: true }, function(error) {
-            if (error) {
-                console.log("Error! " + error);
-               
-            }
-            
-       
-})
-
-app.post("/CreateShop", (req, res) => {
-  //console.log(req.body);
-  let bytes = CryptoJS.AES.decrypt(req.body.body, "!@#$%^&*()");
-  let key = bytes.toString(CryptoJS.enc.Utf8);
-  let shopData = JSON.parse(key);
-  console.log(shopData);
-  res.send({ body: "data recieved" });
-});
 //create a server object:
 app.listen(8080, () => console.log("Server started"));
 // http
