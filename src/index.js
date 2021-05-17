@@ -32,8 +32,7 @@ mongoose.connect(
 
 app.post("/CreateShop", (req, res) => {
   //console.log(req.body);
-  let bytes = CryptoJS.AES.decrypt(req.body.body, "!@#$%^&*()");
-  let key = bytes.toString(CryptoJS.enc.Utf8);
+  let key = dataDecrypt(req.body.body);
   let shopData = JSON.parse(key);
   //console.log(shopData);
   var newShop = new shopModel(shopData);
@@ -49,154 +48,22 @@ app.get("/", (req, res) => {
 });
 app.get("/GetShop/:ShopID", (req, res) => {
   console.log(req.params.ShopID);
-  var data = JSON.stringify({
-    shopName: "Ak stores",
-    shopOwner: "Arun kumar from backend",
-    shopOwnerMobile: "9876543123",
-    shopOwnerEmail: "aK@GMAIL.Com",
-    shopOwnerAddress: "Chennai",
-    shopOwnerInstaId: "Akstores@insta",
-    shopOwnerGpay: "123456",
-    shopOwnerPaytm: "9877654",
-    shopLogo: "",
-    ProductDetails: [
-      {
-        productName: "shirt",
-        productColor: "sdsdsd",
-        ProductVariance: [
-          {
-            productPrice: "499",
-            productAvailability: true,
-            productSize: "32"
-          },
-          {
-            productPrice: "599",
-            productAvailability: true,
-            productSize: "38"
-          }
-        ]
-      },
-      {
-        productName: "pant",
-
-        productColor: "blue",
-        ProductVariance: [
-          {
-            productPrice: "799",
-            productAvailability: true,
-            productSize: "32"
-          },
-          {
-            productPrice: "899",
-            productAvailability: true,
-            productSize: "36"
-          }
-        ]
-      },
-      {
-        productName: "shirt",
-
-        productColor: "sdsdsd",
-        ProductVariance: [
-          {
-            productPrice: "499",
-            productAvailability: true,
-            productSize: "32"
-          },
-          {
-            productPrice: "599",
-            productAvailability: true,
-            productSize: "38"
-          }
-        ]
-      },
-      {
-        productName: "pant",
-        productColor: "blue",
-        ProductVariance: [
-          {
-            productPrice: "799",
-            productAvailability: true,
-            productSize: "32"
-          },
-          {
-            productPrice: "899",
-            productAvailability: true,
-            productSize: "36"
-          }
-        ]
-      },
-      {
-        productName: "shirt",
-        productColor: "sdsdsd",
-        ProductVariance: [
-          {
-            productPrice: "499",
-            productAvailability: true,
-            productSize: "32"
-          },
-          {
-            productPrice: "599",
-            productAvailability: true,
-            productSize: "38"
-          }
-        ]
-      },
-      {
-        productName: "pant",
-
-        productColor: "blue",
-        ProductVariance: [
-          {
-            productPrice: "799",
-            productAvailability: true,
-            productSize: "32"
-          },
-          {
-            productPrice: "899",
-            productAvailability: true,
-            productSize: "36"
-          }
-        ]
-      },
-      {
-        productName: "shirt",
-
-        productColor: "sdsdsd",
-        ProductVariance: [
-          {
-            productPrice: "499",
-            productAvailability: true,
-            productSize: "32"
-          },
-          {
-            productPrice: "599",
-            productAvailability: true,
-            productSize: "38"
-          }
-        ]
-      },
-      {
-        productName: "pant",
-        productColor: "blue",
-        ProductVariance: [
-          {
-            productPrice: "799",
-            productAvailability: true,
-            productSize: "32"
-          },
-          {
-            productPrice: "899",
-            productAvailability: true,
-            productSize: "36"
-          }
-        ]
-      }
-    ]
+  shopModel.findOne({ shopName: req.params.ShopID }, function (err, data) {
+    if (err) {
+      res.send({ err: "Internal server error", code: 500, act: err });
+    }
+    let ciphertext = dataEncrypt(data);
+    res.send({ body: ciphertext });
   });
-  let ciphertext = CryptoJS.AES.encrypt(data, "!@#$%^&*()").toString();
-  res.send({ body: ciphertext });
 });
+
+function dataEncrypt(data) {
+  return CryptoJS.AES.encrypt(data, "!@#$%^&*()").toString();
+}
+function dataDecrypt(data) {
+  let bytes = CryptoJS.AES.decrypt(data, "!@#$%^&*()");
+  return bytes.toString(CryptoJS.enc.Utf8);
+}
 
 //create a server object:
 app.listen(8080, () => console.log("Server started"));
