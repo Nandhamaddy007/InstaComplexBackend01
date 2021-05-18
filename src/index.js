@@ -76,6 +76,15 @@ app.get("/GetShop/:shopName", (req, res) => {
     res.send({ body: cipherText });
   });
 });
+app.get("/getShops", (req, res) => {
+  shopModel.find({}, { _id: 0, shopName: 1 }, function (err, data) {
+    if (err) {
+      res.send({ err: "Internal server error", code: 500, act: err });
+    }
+    // let cipherText=dataEncrypt(data)
+    res.send({ body: data });
+  });
+});
 
 function dataEncrypt(data) {
   return CryptoJS.AES.encrypt(JSON.stringify(data), "!@#$%^&*()").toString();
