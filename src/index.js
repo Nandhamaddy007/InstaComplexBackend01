@@ -29,11 +29,26 @@ mongoose.connect(
     }
   }
 );
+app.post("/updateShop/:shopName", (req, res) => {
+  console.log(req.params.shopName);
+  let name = req.params.shopName;
+  let shopData = dataDecrypt(req.body.body);
+  console.log(shopData);
+  shopModel.findOneAndUpdate({ shopName: { $eq: name } }, shopData, function (
+    err,
+    data
+  ) {
+    if (err) {
+      res.send({ err: "Internal server error", code: 500, act: err });
+    }
+    console.log(data);
+    res.send({ body: "Shop Updated Successfully!!!" });
+  });
+});
 
 app.post("/CreateShop", (req, res) => {
   //console.log(req.body);
-  let key = dataDecrypt(req.body.body);
-  let shopData = JSON.parse(key);
+  let shopData = dataDecrypt(req.body.body);
   //console.log(shopData);
   var newShop = new shopModel(shopData);
   newShop.save(function (err, data) {
@@ -46,23 +61,25 @@ app.post("/CreateShop", (req, res) => {
 app.get("/", (req, res) => {
   res.send("Experss reply");
 });
-app.get("/GetShop/:ShopID", (req, res) => {
-  console.log(req.params.ShopID);
-  shopModel.findOne({ shopName: req.params.ShopID }, function (err, data) {
+app.get("/GetShop/:shopName", (req, res) => {
+  let id = req.params.shopName;
+  //console.log(id);
+  shopModel.findOne({ shopName: { $eq: id } }, function (err, data) {
     if (err) {
       res.send({ err: "Internal server error", code: 500, act: err });
     }
-    let ciphertext = dataEncrypt(data);
-    res.send({ body: ciphertext });
+    //console.log(data);
+    let cipherText = dataEncrypt(data);
+    res.send({ body: cipherText });
   });
 });
 
 function dataEncrypt(data) {
-  return CryptoJS.AES.encrypt(data, "!@#$%^&*()").toString();
+  return CryptoJS.AES.encrypt(JSON.stringify(data), "!@#$%^&*()").toString();
 }
 function dataDecrypt(data) {
   let bytes = CryptoJS.AES.decrypt(data, "!@#$%^&*()");
-  return bytes.toString(CryptoJS.enc.Utf8);
+  return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
 }
 
 //create a server object:
