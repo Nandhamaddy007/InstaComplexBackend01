@@ -55,7 +55,10 @@ app.post("/CreateShop", (req, res) => {
     if (err) {
       res.send({ err: "Internal server error", code: 500, act: err });
     }
-    res.send({ body: "Shop Added Successfully!!!" });
+    res.send({
+      body: "Shop Added Successfully!!!",
+      shopName: shopData.shopName
+    });
   });
 });
 app.get("/", (req, res) => {
