@@ -31,7 +31,7 @@ mongoose.connect(
   }
 );
 app.post("/updateShop/:shopName", (req, res) => {
-  console.log(req.params.shopName);
+  //console.log(req.params.shopName);
   let name = req.params.shopName;
   let shopData = dataDecrypt(req.body.body);
   console.log(shopData);
@@ -78,13 +78,24 @@ app.get("/GetShop/:shopName", (req, res) => {
   });
 });
 app.get("/getShops", (req, res) => {
-  shopModel.find({}, { _id: 0, shopName: 1 }, function (err, data) {
-    if (err) {
-      res.send({ err: "Internal server error", code: 500, act: err });
+  shopModel.find(
+    {},
+    {
+      _id: 0,
+      shopName: 1,
+      shopOwner: 1,
+      shopOwnerMobile: 1,
+      shopOwnerAddress: 1,
+      shopLogo: 1
+    },
+    function (err, data) {
+      if (err) {
+        res.send({ err: "Internal server error", code: 500, act: err });
+      }
+      let cipherText = dataEncrypt(data);
+      res.send({ body: cipherText });
     }
-    // let cipherText=dataEncrypt(data)
-    res.send({ body: data });
-  });
+  );
 });
 app.post("/AddOrder", (req, res) => {
   let data = dataDecrypt(req.body.body);
