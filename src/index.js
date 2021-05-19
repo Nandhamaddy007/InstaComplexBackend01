@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 var CryptoJS = require("crypto-js");
 var shopModel = require("./shopSchema");
+var transactions = require("./TransactionSchema");
 let app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -83,6 +84,35 @@ app.get("/getShops", (req, res) => {
     }
     // let cipherText=dataEncrypt(data)
     res.send({ body: data });
+  });
+});
+app.post("/AddOrder", (req, res) => {
+  let data = dataDecrypt(req.body.body);
+  let newTrans = transactions({
+    orderId: data.orderId,
+    products: data.products,
+    custDetails: data.custDetails
+  });
+  newTrans.save(function (err, data) {
+    if (err) {
+      res.send({ err: "Internal server error", code: 500, act: err });
+    }
+    res.send({
+      msg:
+        "Hi " +
+        data.custDetails.shopperName +
+        ", your Order is Placed Successfully!!!"
+    });
+  });
+});
+
+app.get("/getOrderCount", (req, res) => {
+  transactions.countDocuments({}, function (err, count) {
+    if (err) {
+      res.send({ err: "Internal server error", code: 500, act: err });
+    } else {
+      res.send({ cnt: count });
+    }
   });
 });
 
