@@ -23,7 +23,7 @@ var loc =
   "mongodb+srv://nandhagopal:NandhaAdmin01!@mydb.4lyfk.gcp.mongodb.net/InstaComplexTest?retryWrites=true&w=majority";
 mongoose.connect(
   loc,
-  { useNewUrlParser: true, useUnifiedTopology: true },
+  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: true },
   function (error) {
     if (error) {
       console.log("Error! " + error);
@@ -102,19 +102,20 @@ app.get("/getShops", (req, res) => {
 });
 app.post("/AddOrder", (req, res) => {
   let data = dataDecrypt(req.body.body);
-  console.log(data);
+  //console.log(data);
   let newTrans = transactions({
     orderId: data.orderId,
     products: data.products,
     custDetails: data.custDetails,
     shopName: data.shopName,
-    total: data.total
+    total: data.total,
+    status: data.status
   });
   newTrans.save(function (err, data) {
     if (err) {
       res.send({ err: "Internal server error", code: 500, act: err });
     }
-    console.log(data);
+    //console.log(data);
     res.send({
       msg:
         "Hi " +
@@ -147,6 +148,21 @@ app.get("/getOrders/:shopName", (req, res) => {
 
     res.send({ body: cipherText });
   });
+});
+
+app.patch("/updateOrder", (req, res) => {
+  let data = dataDecrypt(req.body.body);
+  //console.log(data);
+  transactions.findOneAndUpdate(
+    { orderId: { $eq: data.orderId } },
+    { status: data.status },
+    function (err, data) {
+      if (err) {
+        res.send({ err: "Internal server error", code: 500, act: err });
+      }
+      res.send({ msg: "Order updated successfully!!!" });
+    }
+  );
 });
 
 function dataEncrypt(data) {
