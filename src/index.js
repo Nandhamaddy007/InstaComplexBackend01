@@ -107,7 +107,8 @@ app.post("/AddOrder", (req, res) => {
     orderId: data.orderId,
     products: data.products,
     custDetails: data.custDetails,
-    shopName: data.shopName
+    shopName: data.shopName,
+    total: data.total
   });
   newTrans.save(function (err, data) {
     if (err) {
@@ -144,7 +145,7 @@ app.get("/getOrders/:shopName", (req, res) => {
     }
     let cipherText = dataEncrypt(data);
 
-    res.send({ body: data });
+    res.send({ body: cipherText });
   });
 });
 

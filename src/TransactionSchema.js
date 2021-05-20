@@ -4,7 +4,8 @@ var transactionSchema = mongoose.Schema({
   orderId: String,
   products: Array,
   custDetails: Object,
-  shopName: String
+  shopName: String,
+  total: Number
 });
 module.exports = mongoose.model(
   "transaction",
