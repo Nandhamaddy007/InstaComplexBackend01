@@ -153,9 +153,13 @@ app.get("/getOrders/:shopName", (req, res) => {
 app.patch("/updateOrder", (req, res) => {
   let data = dataDecrypt(req.body.body);
   //console.log(data);
+  let temp = { status: data.status };
+  if (data.status === "Shipped") {
+    temp["shipmentId"] = data.shipmentId;
+  }
   transactions.findOneAndUpdate(
     { orderId: { $eq: data.orderId } },
-    { status: data.status },
+    temp,
     function (err, data) {
       if (err) {
         res.send({ err: "Internal server error", code: 500, act: err });
