@@ -68,7 +68,10 @@ app.get("/", (req, res) => {
 app.get("/GetShop/:shopName", (req, res) => {
   let id = req.params.shopName;
   //console.log(id);
-  shopModel.findOne({ shopName: { $eq: id } }, function (err, data) {
+  shopModel.findOne({ shopName: { $eq: id } }, { _id: 0 }, function (
+    err,
+    data
+  ) {
     if (err) {
       res.send({ err: "Internal server error", code: 500, act: err });
     }
@@ -99,15 +102,18 @@ app.get("/getShops", (req, res) => {
 });
 app.post("/AddOrder", (req, res) => {
   let data = dataDecrypt(req.body.body);
+  console.log(data);
   let newTrans = transactions({
     orderId: data.orderId,
     products: data.products,
-    custDetails: data.custDetails
+    custDetails: data.custDetails,
+    shopName: data.shopName
   });
   newTrans.save(function (err, data) {
     if (err) {
       res.send({ err: "Internal server error", code: 500, act: err });
     }
+    console.log(data);
     res.send({
       msg:
         "Hi " +
@@ -124,6 +130,21 @@ app.get("/getOrderCount", (req, res) => {
     } else {
       res.send({ cnt: count });
     }
+  });
+});
+
+app.get("/getOrders/:shopName", (req, res) => {
+  let id = req.params.shopName;
+  transactions.find({ shopName: { $eq: id } }, { _id: 0 }, function (
+    err,
+    data
+  ) {
+    if (err) {
+      res.send({ err: "Internal server error", code: 500, act: err });
+    }
+    let cipherText = dataEncrypt(data);
+
+    res.send({ body: data });
   });
 });
 
